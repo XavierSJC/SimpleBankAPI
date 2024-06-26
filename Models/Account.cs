@@ -3,6 +3,6 @@
     public class Account
     {
         public int Id { get; set; }
-        public float balance { get; set; }
+        public float Balance { get; set; }
     }
 }
