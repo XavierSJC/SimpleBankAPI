@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SimpleBankAPI.Models;
 using SimpleBankAPI.Services;
 
 namespace SimpleBankAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class BankController : ControllerBase
     {
@@ -24,7 +22,7 @@ namespace SimpleBankAPI.Controllers
             try
             {
                 _bankService.Reset();
-                return Ok("OK");
+                return Content("OK");
             }
             catch (Exception ex) 
             { 

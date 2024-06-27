@@ -8,6 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddTransient<IBank, Bank>();
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(
+        builder =>
+        {
+            builder.AllowAnyOrigin();
+        });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
