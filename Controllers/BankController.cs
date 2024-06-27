@@ -42,18 +42,18 @@ namespace SimpleBankAPI.Controllers
                     finalBalance = 
                         _bank.Deposit(bankEvent.Destination, bankEvent.Amount);
 
-                    return Ok(new EventBankAnswer() { Destination = new() { Id = bankEvent.Destination, Balance = finalBalance} });
+                    return Created(string.Empty, new EventAnswer() { Destination = new() { Id = bankEvent.Destination, Balance = finalBalance} });
 
                 case "withdraw":
                     finalBalance =
                         _bank.Withdraw(bankEvent.Origin, bankEvent.Amount);
 
-                    return Ok(finalBalance);
+                    return Created(string.Empty, new EventAnswer() { Origin = new() { Id = bankEvent.Origin, Balance = finalBalance } });
 
                 case "transfer":
                     _bank.Transfer(bankEvent.Origin, bankEvent.Destination, bankEvent.Amount);
 
-                    return Ok();
+                    return Created(string.Empty, new EventAnswer() { Origin = new() { Id = bankEvent.Origin, Balance = 0 } });
 
                 default:
                     return BadRequest("Event is not valid");
