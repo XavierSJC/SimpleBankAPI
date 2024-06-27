@@ -12,13 +12,13 @@ namespace SimpleBankAPI.Services
             _dbContext = dbContext;
         }
 
-        public float Deposit(string accountId, float amount)
+        public Account Deposit(string accountId, float amount)
         {
             var account = GetOrCreateAccount(accountId);
             account.Balance += amount;
             _dbContext.SaveChanges();
 
-            return account.Balance;
+            return account;
         }
 
         public float GetBalance(string accountId)
@@ -39,11 +39,9 @@ namespace SimpleBankAPI.Services
             _dbContext.SaveChanges();
         }
 
-        public void Transfer(string originId, string destinationId, float amount)
+        public IEnumerable<Account> Transfer(string originId, string destinationId, float amount)
         {
             var accountOrigin = _dbContext.Accounts.Where(ac => ac.Id == originId).FirstOrDefault();
-            var accountDestination = GetOrCreateAccount(destinationId);
-            
             if (accountOrigin == null)
             {
                 throw new Exception($"Account {originId} did not find");
@@ -54,13 +52,20 @@ namespace SimpleBankAPI.Services
                 throw new Exception($"No balance available");
             }
 
+            var accountDestination = GetOrCreateAccount(destinationId);
             accountOrigin.Balance -= amount;
             accountDestination.Balance += amount;
 
             _dbContext.SaveChanges();
+
+            var result = new List<Account>();
+            result.Add(accountOrigin);
+            result.Add(accountDestination);
+
+            return result;
         }
 
-        public float Withdraw(string accountId, float amount)
+        public Account Withdraw(string accountId, float amount)
         {
             var account = _dbContext.Accounts.Where(ac => ac.Id == accountId).FirstOrDefault();
             if (account == null)
@@ -71,7 +76,7 @@ namespace SimpleBankAPI.Services
             account.Balance -= amount;
             _dbContext.SaveChanges();
 
-            return account.Balance;
+            return account;
         }
 
         private Account GetOrCreateAccount(string accountId)

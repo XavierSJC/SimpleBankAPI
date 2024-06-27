@@ -39,21 +39,14 @@ namespace SimpleBankAPI.Controllers
             switch (bankEvent.Type)
             {
                 case "deposit":
-                    finalBalance = 
-                        _bank.Deposit(bankEvent.Destination, bankEvent.Amount);
-
-                    return Created(string.Empty, new EventAnswer() { Destination = new() { Id = bankEvent.Destination, Balance = finalBalance} });
+                    return Created(string.Empty, new EventAnswer() { Destination = _bank.Deposit(bankEvent.Destination, bankEvent.Amount) });
 
                 case "withdraw":
-                    finalBalance =
-                        _bank.Withdraw(bankEvent.Origin, bankEvent.Amount);
-
-                    return Created(string.Empty, new EventAnswer() { Origin = new() { Id = bankEvent.Origin, Balance = finalBalance } });
+                    return Created(string.Empty, new EventAnswer() { Origin = _bank.Withdraw(bankEvent.Origin, bankEvent.Amount) });
 
                 case "transfer":
-                    _bank.Transfer(bankEvent.Origin, bankEvent.Destination, bankEvent.Amount);
-
-                    return Created(string.Empty, new EventAnswer() { Origin = new() { Id = bankEvent.Origin, Balance = 0 } });
+                    IEnumerable<Account> result = _bank.Transfer(bankEvent.Origin, bankEvent.Destination, bankEvent.Amount);
+                    return Created(string.Empty, new EventAnswer() { Origin = result.ElementAt(0), Destination = result.ElementAt(1) });
 
                 default:
                     return BadRequest("Event is not valid");
