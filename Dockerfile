@@ -5,7 +5,8 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-preview AS build
+ARG TARGETARCH
 WORKDIR /src
 COPY ["SimpleBankAPI.csproj", "."]
 RUN dotnet restore "./SimpleBankAPI.csproj"
@@ -14,7 +15,7 @@ WORKDIR "/src/."
 RUN dotnet build "SimpleBankAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "SimpleBankAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "SimpleBankAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false -a $TARGETARCH
 
 FROM base AS final
 WORKDIR /app
