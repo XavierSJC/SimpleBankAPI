@@ -18,7 +18,7 @@ namespace SimpleBankAPI.Services
             account.Balance += amount;
             _dbContext.SaveChanges();
 
-            return 0;
+            return account.Balance;
         }
 
         public float GetBalance(int accountId)
@@ -33,19 +33,45 @@ namespace SimpleBankAPI.Services
             return account.Balance;
         }
 
-        public bool Reset()
+        public void Reset()
         {
-            throw new NotImplementedException();
+            _dbContext.Accounts.RemoveRange(_dbContext.Accounts);
+            _dbContext.SaveChanges();
         }
 
-        public void Transfer(int originId, int destination, float amount)
+        public void Transfer(int originId, int destinationId, float amount)
         {
-            throw new NotImplementedException();
+            var accountOrigin = _dbContext.Accounts.Where(ac => ac.Id == originId).FirstOrDefault();
+            var accountDestination = GetOrCreateAccount(destinationId);
+            
+            if (accountOrigin == null)
+            {
+                throw new Exception($"Account {originId} did not find");
+            }
+
+            if (accountOrigin.Balance < amount)
+            {
+                throw new Exception($"No balance available");
+            }
+
+            accountOrigin.Balance -= amount;
+            accountDestination.Balance += amount;
+
+            _dbContext.SaveChanges();
         }
 
         public float Withdraw(int accountId, float amount)
         {
-            throw new NotImplementedException();
+            var account = _dbContext.Accounts.Where(ac => ac.Id == accountId).FirstOrDefault();
+            if (account == null)
+            {
+                throw new Exception($"Account {accountId} did not find");
+            }
+
+            account.Balance -= amount;
+            _dbContext.SaveChanges();
+
+            return account.Balance;
         }
 
         private Account GetOrCreateAccount(int accountId)
