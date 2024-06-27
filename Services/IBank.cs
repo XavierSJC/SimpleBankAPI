@@ -3,9 +3,9 @@
     public interface IBank
     {
         void Reset();
-        float Deposit(int accountId, float amount);
-        float GetBalance(int accountId);
-        float Withdraw(int accountId, float amount);
-        void Transfer(int originId, int destinationId, float amount);
+        float Deposit(string accountId, float amount);
+        float GetBalance(string accountId);
+        float Withdraw(string accountId, float amount);
+        void Transfer(string originId, string destinationId, float amount);
     }
 }

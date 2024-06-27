@@ -2,8 +2,9 @@
 {
     public class Event
     {
-        public string? Type { get; set; }
-        public Origin? Origin { get; set; }
-        public Destination? Destination { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string? Origin { get; set; }
+        public string? Destination { get; set; }
+        public float Amount { get; set; }
     }
 }

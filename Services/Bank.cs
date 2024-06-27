@@ -12,7 +12,7 @@ namespace SimpleBankAPI.Services
             _dbContext = dbContext;
         }
 
-        public float Deposit(int accountId, float amount)
+        public float Deposit(string accountId, float amount)
         {
             var account = GetOrCreateAccount(accountId);
             account.Balance += amount;
@@ -21,7 +21,7 @@ namespace SimpleBankAPI.Services
             return account.Balance;
         }
 
-        public float GetBalance(int accountId)
+        public float GetBalance(string accountId)
         {
             var account = _dbContext.Accounts.Where(ac => ac.Id == accountId).FirstOrDefault();
 
@@ -39,7 +39,7 @@ namespace SimpleBankAPI.Services
             _dbContext.SaveChanges();
         }
 
-        public void Transfer(int originId, int destinationId, float amount)
+        public void Transfer(string originId, string destinationId, float amount)
         {
             var accountOrigin = _dbContext.Accounts.Where(ac => ac.Id == originId).FirstOrDefault();
             var accountDestination = GetOrCreateAccount(destinationId);
@@ -60,7 +60,7 @@ namespace SimpleBankAPI.Services
             _dbContext.SaveChanges();
         }
 
-        public float Withdraw(int accountId, float amount)
+        public float Withdraw(string accountId, float amount)
         {
             var account = _dbContext.Accounts.Where(ac => ac.Id == accountId).FirstOrDefault();
             if (account == null)
@@ -74,7 +74,7 @@ namespace SimpleBankAPI.Services
             return account.Balance;
         }
 
-        private Account GetOrCreateAccount(int accountId)
+        private Account GetOrCreateAccount(string accountId)
         {
             var account = _dbContext.Accounts.Where(ac => ac.Id == accountId).FirstOrDefault();
             if (account == null)

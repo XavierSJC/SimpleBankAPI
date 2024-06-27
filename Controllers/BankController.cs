@@ -26,29 +26,38 @@ namespace SimpleBankAPI.Controllers
         }
 
         [HttpGet("balance")]
-        public ActionResult GetBalance([FromQuery]int account_id) 
+        public ActionResult GetBalance([FromQuery]string account_id) 
         { 
-            var balance = _bank.GetBalance(account_id);
-
-            return Ok(balance);
+            return Ok(_bank.GetBalance(account_id));
         }
 
         [HttpPost("event")]
         public ActionResult Event([FromBody]Event bankEvent)
         {
+            float finalBalance;
+
             switch (bankEvent.Type)
             {
                 case "deposit":
-                    bankEvent.Destination.Balance = 
-                        _bank.Deposit(bankEvent.Destination.Id, bankEvent.Destination.Balance);
-                    break;
+                    finalBalance = 
+                        _bank.Deposit(bankEvent.Destination, bankEvent.Amount);
+
+                    return Ok(new EventBankAnswer() { Destination = new() { Id = bankEvent.Destination, Balance = finalBalance} });
+
+                case "withdraw":
+                    finalBalance =
+                        _bank.Withdraw(bankEvent.Origin, bankEvent.Amount);
+
+                    return Ok(finalBalance);
+
+                case "transfer":
+                    _bank.Transfer(bankEvent.Origin, bankEvent.Destination, bankEvent.Amount);
+
+                    return Ok();
 
                 default:
-                    break;
+                    return BadRequest("Event is not valid");
             }
-
-
-            return Ok(bankEvent.Destination);
         }
     }
 }
